@@ -1,0 +1,43 @@
+wsl --install      in windows power shell as administrator
+
+Open ubuntu
+sudo apt update 
+sudo apt install ansible -y 
+ansible –version 
+mkdir ~/ansible-lab 
+cd ~/ansible-lab 
+Create an Inventory File 
+nano hosts 
+[local]
+ localhost ansible_connection=local 
+Then save: • Press CTRL + O → Enter to save • Press CTRL + X to exit
+Test ansible working
+ansible -i hosts local -m ping 
+Output in json
+nano install_nginx.yml 
+
+ paste this 
+
+- name: Install and start NGINX on localhost
+ hosts: local
+ become: yes
+ tasks:
+ - name: Install NGINX
+ apt:
+ name: nginx
+ state: present
+ update_cache: yes
+ - name: Ensure NGINX is running
+ service:
+ name: nginx
+ state: started
+ enabled: yes
+
+Save and exit (CTRL+O, Enter, then CTRL+X) 
+18.run the playbook
+19.ansible-playbook -i hosts install_nginx.yml 
+You’ll see output showing the tasks being executed. 
+run:
+curl http://localhost 
+U will see css page from ngnix 
+
