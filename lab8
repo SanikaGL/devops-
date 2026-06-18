@@ -1,0 +1,59 @@
+After  jenkins create jar then check in ubuntu like this 
+So:
+Open Ubuntu normally.
+Run:
+ls /mnt/c/ProgramData/Jenkins/.jenkins/workspace/p8/target
+If everything is accessible, you should see something like:
+simple-maven-project-with-tests-1.0-SNAPSHOT.jar
+
+
+Step 1: Create deployment folder
+Run:
+mkdir -p ~/deployment
+
+Step 2: Create hosts.ini
+Run:
+nano hosts.ini
+Paste:
+[servers]
+localhost ansible_connection=local
+Save:
+Ctrl+O
+Enter
+Ctrl+X
+
+Step 3: Create deploy.yml
+Run:
+nano deploy.yml
+Paste exactly:
+---
+- name: Deploy Maven Artifact
+ hosts: servers
+ connection: local
+
+ tasks:
+
+   - name: Create deployment directory
+     file:
+       path: /home/sanikagl/deployment
+       state: directory
+
+   - name: Copy JAR file
+     copy:
+       src: /mnt/c/ProgramData/Jenkins/.jenkins/workspace/p8/target/simple-maven-project-with-tests-1.0-SNAPSHOT.jar
+       dest: /home/sanikagl/deployment/
+Save:
+Ctrl+O
+Enter
+Ctrl+X
+
+Step 4: Run the playbook
+Execute:
+ansible-playbook -i hosts.ini deploy.yml
+
+Step 5: Verify deployment
+Run:
+ls ~/deployment
+You should see:
+simple-maven-project-with-tests-1.0-SNAPSHOT.jar
+
